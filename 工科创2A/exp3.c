@@ -1,13 +1,13 @@
 
 //@author C_Zihao
 //@Data 2020.6.12 
-//ÊµÑéÈı
+//å®éªŒä¸‰
 
-//ÌâÄ¿ÒªÇó£º¸ù¾İÉÏÎ»»úµÄÃüÁî£¬×÷³öÏàÓ¦»ØÏÔ£¬Èç£º
-//         ÉÏÎ»»ú·¢ËÍMAY+01 £¬»ØÏÔJUN
-//         ÉÏÎ»»ú·¢ËÍMAY-06£¬»ØÏÔ NOV
-//±£ÁôÔ­ÓĞÊ±¼äÏÔÊ¾Óë´®¿ÚÊ±ÖÓ¹¦ÄÜ
-//¶îÍâÌí¼Ó£ºÆô¶¯ÏÔÊ¾Ñ§ºÅÓëÏÔÊ¾¡°HELLo¡±
+//é¢˜ç›®è¦æ±‚ï¼šæ ¹æ®ä¸Šä½æœºçš„å‘½ä»¤ï¼Œä½œå‡ºç›¸åº”å›æ˜¾ï¼Œå¦‚ï¼š
+//         ä¸Šä½æœºå‘é€MAY+01 ï¼Œå›æ˜¾JUN
+//         ä¸Šä½æœºå‘é€MAY-06ï¼Œå›æ˜¾ NOV
+//ä¿ç•™åŸæœ‰æ—¶é—´æ˜¾ç¤ºä¸ä¸²å£æ—¶é’ŸåŠŸèƒ½
+//é¢å¤–æ·»åŠ ï¼šå¯åŠ¨æ˜¾ç¤ºå­¦å·ä¸æ˜¾ç¤ºâ€œHELLoâ€
 
 #include <stdio.h>
 #include <stdint.h>
@@ -54,14 +54,14 @@
 #define TCA6424_OUTPUT_PORT1			0x05
 #define TCA6424_OUTPUT_PORT2			0x06
 
-void Testtime(void);                 //Ê±¼ä½øÎ»ÅĞ¶Ï
-void Timeset(void);                 //Ê±¼äÉèÖÃ
+void Testtime(void);                 //æ—¶é—´è¿›ä½åˆ¤æ–­
+void Timeset(void);                 //æ—¶é—´è®¾ç½®
 void Timeinc(void);
 void Timeget(void);
-void Timedisplay(void);    //Ê±¼äÏÔÊ¾
-void Display(int count, int num);    //¶¯Ì¬É¨ÃèÑİÊ¾
-void initshow(void);  //³õÊ¼»¯£¬ÏÔÊ¾Ñ§ºÅ 
-void helloshow(void);  //³õÊ¼»¯ÏÔÊ¾hello
+void Timedisplay(void);    //æ—¶é—´æ˜¾ç¤º
+void Display(int count, int num);    //åŠ¨æ€æ‰«ææ¼”ç¤º
+void initshow(void);  //åˆå§‹åŒ–ï¼Œæ˜¾ç¤ºå­¦å· 
+void helloshow(void);  //åˆå§‹åŒ–æ˜¾ç¤ºhello
 
 void 		Delay(uint32_t value);
 void 		S800_GPIO_Init(void);
@@ -83,8 +83,8 @@ volatile uint8_t rightshift = 0x01;
 volatile uint8_t i=0;
 volatile uint8_t DecOneMark=0;
 
-int count = 0;   //count¶¯Ì¬É¨ÃèÏÔÊ¾
-int number = 0;  //number¸ºÔğÊä³ö
+int count = 0;   //countåŠ¨æ€æ‰«ææ˜¾ç¤º
+int number = 0;  //numberè´Ÿè´£è¾“å‡º
 
 char Message[1000]={'\0'};
 char RecMonth[3]={'\0'};
@@ -92,7 +92,7 @@ char RecTimeCnt[11]={'\0'};
 uint32_t ui32SysClock;
 uint8_t seg7[] = {0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x40};
 uint8_t segchoose[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
-char *Month[]={"JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"}; //ÔÂ·İ
+char *Month[]={"JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"}; //æœˆä»½
 uint8_t disp_buff[8];
 uint8_t hour=12, minute=56, second=3;
 uint8_t minutecnt=0, secondcnt=0;
@@ -101,16 +101,16 @@ uint8_t PresentMonth;
 bool TimeCntFlag;
 //the disp_tab and disp_tab_7seg must be the Corresponding relation
 //the last character should be the space(not display) character
-char	const disp_tab[]			={'0','1','2','3','4','5',     //the could display char and its segment code   
-															 '6','7','8','9','A','b',
-															 'C','d','E','F',
-															 'H','L','P','o',
-															 '.','-','_',' '}; 
+char	const disp_tab[]	={'0','1','2','3','4','5',     //the could display char and its segment code   
+							 '6','7','8','9','A','b',
+							'C','d','E','F',
+							'H','L','P','o',
+							 '.','-','_',' '}; 
 char const disp_tab_7seg[]	={0x3F,0x06,0x5B,0x4F,0x66,0x6D,  
-															0x7D,0x07,0x7F,0x6F,0x77,0x7C,
-															0x39,0x5E,0x79,0x71, 
-															0x76,0x38,0x73,0x5c,
-															0x80,0x40, 0x08,0x00}; 
+							0x7D,0x07,0x7F,0x6F,0x77,0x7C,
+							0x39,0x5E,0x79,0x71, 
+							0x76,0x38,0x73,0x5c,
+						    0x80,0x40, 0x08,0x00}; 
 int main(void)
 {
 	volatile uint16_t	i2c_flash_cnt,gpio_flash_cnt;
@@ -145,21 +145,21 @@ int main(void)
 	while(counterinit>0)
 	{
 		counterinit=counterinit-1;
-	  initshow();   //ÏÔÊ¾Ñ§ºÅ
+	   initshow();   //æ˜¾ç¤ºå­¦å·
   }
 	counterinit=1000;
 	
 	while(counterinit>0)
 	{
 		counterinit=counterinit-1;
-	  helloshow();   //ÏÔÊ¾Ñ§ºÅ
+	   helloshow();   //æ˜¾ç¤ºhello
   }
 	
  	while (1)
 	{ 
-		//³£¹æÏÔÊ¾
+		//å¸¸è§„æ˜¾ç¤º
 		Timedisplay();
-		//³£¹æ¼ÆÊ±
+		//å¸¸è§„è®¡æ—¶
 		if (systick_100ms_status)
 		{
 			systick_100ms_status=0;
@@ -185,7 +185,7 @@ int main(void)
 			Timeget();
 		}
 		
-		if(OriginMonth!=0) //ÔÂ·İ¼Ó¼õ
+		if(OriginMonth!=0) //æœˆä»½åŠ å‡
 		{
 			if(Message[3]=='+')
 			{
@@ -222,15 +222,15 @@ void helloshow(void)
 	  count=0;
 	  while(count<5)
 		{
-	    switch (count)//¶¯Ì¬É¨Ãè
+	    switch (count)//åŠ¨æ€æ‰«æ
 	  	{
 	  	case 0: number = 16;break; //h
 		  case 1: number = 14;break; //e
 		  case 2: number = 17;break; //l
 		  case 3: number = 17;break; //l
-		  case 4: number = 19;break; //o,ÎªÁËÓë0Çø·Ö£¬Ã»ÓĞÊ¹ÓÃ´óĞ´
+		  case 4: number = 19;break; //o,ä¸ºäº†ä¸0åŒºåˆ†ï¼Œæ²¡æœ‰ä½¿ç”¨å¤§å†™
 		}
-		Display(segchoose[count], number); //¶¯Ì¬ÏÔÊ¾
+		Display(segchoose[count], number); //åŠ¨æ€æ˜¾ç¤º
 		Delay(10000);
 		count++;
 	}
@@ -242,26 +242,26 @@ void Timedisplay(void)
 	  count=0;
 	  while(count<8)
 		{
-	    switch (count)//¶¯Ì¬É¨Ãè
+	    switch (count)//åŠ¨æ€æ‰«æ
 	  	{
-	  	case 0: number = hour / 10;break; //Ğ¡Ê±
+	  	case 0: number = hour / 10;break; //å°æ—¶
 		  case 1: number = hour % 10;break;
-		  case 2: number = 21;break; //number=10Ê±£¬ÏÔÊ¾"-"
-		  case 3: number = minute / 10;break; //·ÖÖÓ
+		  case 2: number = 21;break; //number=10æ—¶ï¼Œæ˜¾ç¤º"-"
+		  case 3: number = minute / 10;break; //åˆ†é’Ÿ
 		  case 4: number = minute % 10;break;
-		  case 5: number = 21;break; //number=10£¬ÏÔÊ¾"-"
-		  case 6: number = second / 10;break; //Ãë
+		  case 5: number = 21;break; //number=10ï¼Œæ˜¾ç¤º"-"
+		  case 6: number = second / 10;break; //ç§’
 		  case 7: number = second % 10;break;
 		}
-		Display(segchoose[count], number); //¶¯Ì¬ÏÔÊ¾
+		Display(segchoose[count], number); //åŠ¨æ€æ˜¾ç¤º
 		Delay(3000);
 		count++;
 	}
 		
 }
-void Display(int counter, int num)  //ÑİÊ¾
+void Display(int counter, int num)  //æ¼”ç¤º
 {
-	result = I2C0_WriteByte(TCA6424_I2CADDR, TCA6424_OUTPUT_PORT2, 0x00); //Çå³ı²ĞÓ°
+	result = I2C0_WriteByte(TCA6424_I2CADDR, TCA6424_OUTPUT_PORT2, 0x00); //æ¸…é™¤æ®‹å½±
 	result = I2C0_WriteByte(TCA6424_I2CADDR, TCA6424_OUTPUT_PORT1, disp_tab_7seg[num]);
 	result = I2C0_WriteByte(TCA6424_I2CADDR, TCA6424_OUTPUT_PORT2, (uint8_t)(counter));
 }
@@ -270,25 +270,25 @@ void initshow()
     count=0;
 	  while(count<8)
 		{
-	    switch (count)//¶¯Ì¬É¨Ãè
+	    switch (count)//åŠ¨æ€æ‰«æ
 	  	{
-	  	case 0: number = 2;break; //Ğ¡Ê±
+	  	case 0: number = 2;break; //å°æ—¶
 		  case 1: number = 1;break;
-		  case 2: number = 9;break; //number=10Ê±£¬ÏÔÊ¾"-"
-		  case 3: number = 1;break; //·ÖÖÓ
+		  case 2: number = 9;break; //number=10æ—¶ï¼Œæ˜¾ç¤º"-"
+		  case 3: number = 1;break; //åˆ†é’Ÿ
 		  case 4: number = 1;break;
-		  case 5: number = 1;break; //number=10£¬ÏÔÊ¾"-"
-		  case 6: number = 8;break; //Ãë
+		  case 5: number = 1;break; //number=10ï¼Œæ˜¾ç¤º"-"
+		  case 6: number = 8;break; //ç§’
 		  case 7: number = 7;break;
 		}
-		Display(segchoose[count], number); //¶¯Ì¬ÏÔÊ¾
+		Display(segchoose[count], number); //åŠ¨æ€æ˜¾ç¤º
 		Delay(10000);
 		count++;
 	}
 }
 
 
-void Testtime(void)  //Ê±¼ä½øÎ»ÅĞ¶Ïº¯Êı
+void Testtime(void)  //æ—¶é—´è¿›ä½åˆ¤æ–­å‡½æ•°
 {
 	if (second > 59)
 	{
@@ -306,7 +306,7 @@ void Testtime(void)  //Ê±¼ä½øÎ»ÅĞ¶Ïº¯Êı
 	}
 }
 
-void Timeset(void)  //Ê±¼äÉèÖÃ
+void Timeset(void)  //æ—¶é—´è®¾ç½®
 {
       hour=(Message[3]-'0')*10+(Message[4]-'0');
 		  minute=(Message[6]-'0')*10+(Message[7]-'0');
@@ -318,7 +318,7 @@ void Timeset(void)  //Ê±¼äÉèÖÃ
 			UARTStringPut(Message);
 			memset(Message, 0, sizeof(Message));    
 }
-void Timeinc(void)  //Ê±¼äÔö¼ÓÉèÖÃ
+void Timeinc(void)  //æ—¶é—´å¢åŠ è®¾ç½®
 {
     hour=(Message[3]-'0')*10+(Message[4]-'0')+hour;
 		minute=(Message[6]-'0')*10+(Message[7]-'0')+minute;
@@ -333,7 +333,7 @@ void Timeinc(void)  //Ê±¼äÔö¼ÓÉèÖÃ
 		UARTStringPut(Message);
 		memset(Message, 0, sizeof(Message));   
 }
-void Timeget(void)  //Ê±¼ä»ñÈ¡
+void Timeget(void)  //æ—¶é—´è·å–
 {
     Message[0]='T';Message[1]='I';Message[2]='M';Message[3]='E';
 	  Message[4]=(hour/10)+'0';Message[5]=(hour%10)+'0';Message[6]=':';
@@ -412,7 +412,7 @@ uint8_t UARTStringMonGet(void)
 	{
 		RecMonth[i]=Message[i];
 	}
-	if(strcmp(RecMonth,Month[0])==0) //±È¶ÔÄ¿Ç°ÔÂ·İ
+	if(strcmp(RecMonth,Month[0])==0) //æ¯”å¯¹ç›®å‰æœˆä»½
 	{return 1;}
 	else if(strcmp(RecMonth,Month[1])==0)
 	{return 2;}
